@@ -35,6 +35,7 @@ public class Persistencia {
 		} catch(Exception e) { e.printStackTrace(); }
 		return list;
 	}
+	
 	public static int countByStockCode(String stockCode) {
 		int sum = 0;
 		try (BufferedReader reader = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"), Charset.defaultCharset())){
@@ -94,6 +95,40 @@ public class Persistencia {
 		return null;
 	}
 	
+	public static List <String> findPartiallyByDescription(String search) {
+		List <String> list = new ArrayList <> ();
+		search = search.toUpperCase();
+		try (BufferedReader read = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"), Charset.defaultCharset())){
+			String content = read.readLine();
+			while(read.ready()) {
+				content = read.readLine();
+				if(content.matches(".*(" + search + ").*"))
+					list.add(content);
+			}
+		} catch(Exception e) { e.printStackTrace(); }
+		return list;
+	}
 	
+	
+	public static List <String> findPartiallyByDescription(String search, boolean order) {
+		HashMap <String, Integer> quantity = new HashMap <String, Integer> ();
+		List <String> list = findPartiallyByDescription(search);
+		if(order) {
+			for(String index : list) {
+				String array [] = index.split("[,]");
+				System.out.println(array[2]);
+				if(!quantity.containsKey(array[2])){
+					quantity.put(array[2], Integer.parseInt(array[3]));
+				}else {
+					int current = quantity.get(array[2]);
+					quantity.replace(array[2], (current + Integer.parseInt(array[3])));
+				}
+			}
+			//Falto ordenar los datos.
+			return Collections.emptyList();
+		}else {
+			return list.stream().toList();
+		}
+	}
 	
 }
