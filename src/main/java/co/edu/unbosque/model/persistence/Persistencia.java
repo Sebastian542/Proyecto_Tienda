@@ -1,8 +1,12 @@
 package co.edu.unbosque.model.persistence;
-import java.io.*;
-import java.nio.charset.*;
-import java.nio.file.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 public class Persistencia {
 	
@@ -95,40 +99,31 @@ public class Persistencia {
 		return null;
 	}
 	
-	public static List <String> findPartiallyByDescription(String search) {
-		List <String> list = new ArrayList <> ();
-		search = search.toUpperCase();
-		try (BufferedReader read = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"), Charset.defaultCharset())){
-			String content = read.readLine();
-			while(read.ready()) {
-				content = read.readLine();
-				if(content.matches(".*(" + search + ").*"))
-					list.add(content);
-			}
-		} catch(Exception e) { e.printStackTrace(); }
-		return list;
-	}
-	
-	
-	public static List <String> findPartiallyByDescription(String search, boolean order) {
-		HashMap <String, Integer> quantity = new HashMap <String, Integer> ();
-		List <String> list = findPartiallyByDescription(search);
-		if(order) {
-			for(String index : list) {
-				String array [] = index.split("[,]");
-				System.out.println(array[2]);
-				if(!quantity.containsKey(array[2])){
-					quantity.put(array[2], Integer.parseInt(array[3]));
-				}else {
-					int current = quantity.get(array[2]);
-					quantity.replace(array[2], (current + Integer.parseInt(array[3])));
+	public static String findPartiallyByDescription(String search, boolean order) {
+		try (BufferedReader scan = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"),
+				Charset.defaultCharset())) {
+			HashMap<Integer, String> partialDescription = new HashMap<>();
+			String content = scan.readLine();
+			while (scan.ready()) {
+				content = scan.readLine();
+				String line[] = content.split(",");
+				if (!search.equalsIgnoreCase(String.valueOf(line[2]))) {
+					if (order) {
+						TreeMap<Integer, String> quantity = new TreeMap<Integer, String>();
+						quantity.put(Integer.parseInt(line[3]), line[2]);
+						return quantity.descendingMap().entrySet().stream().map(x -> String.valueOf(x))
+								.collect(Collectors.joining("\n"));
+					} else {
+						partialDescription.put(Integer.parseInt(line[3]), line[2]);
+						return partialDescription.entrySet().stream().map(x -> String.valueOf(x))
+								.collect(Collectors.joining("\n"));
+					}
 				}
 			}
-			//Falto ordenar los datos.
-			return Collections.emptyList();
-		}else {
-			return list.stream().toList();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return null;
 	}
 	
 }
