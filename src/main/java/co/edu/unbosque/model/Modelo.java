@@ -1,5 +1,5 @@
 package co.edu.unbosque.model;
-
+import co.edu.unbosque.model.persistence.Persistencia;
 public class Modelo {
 
 	public Modelo() {		
