@@ -31,7 +31,7 @@ public class Modelo {
 	}
 
 	public void findPartiallyByDescriptionFilter(String search, int initMonth, int endMonth) {
-		System.out.println(Persistencia.finPartiallyByDescription(search, initMonth, endMonth));
+		System.out.println(Persistencia.findPartiallyByDescription(search, initMonth, endMonth));
 	}			
 	
 	
