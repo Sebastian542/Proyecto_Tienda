@@ -14,7 +14,7 @@ public class Persistencia {
 	
 	public Persistencia() {}
 	
-	public  double sumTotalSales() {
+	public static double sumTotalSales() {
 		
 		double sum = 0;
 		
@@ -30,7 +30,7 @@ public class Persistencia {
 	}
 
 
-	public  List <String> findByInvoiceNo(String invoiceNo) {
+	public static List <String> findByInvoiceNo(String invoiceNo) {
 		List <String> list = new ArrayList <> ();
 		try (BufferedReader read = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"), Charset.defaultCharset())){
 			String content = read.readLine();
@@ -44,7 +44,7 @@ public class Persistencia {
 		return list;
 	}
 	
-	public  int countByStockCode(String stockCode) {
+	public static int countByStockCode(String stockCode) {
 		int sum = 0;
 		try (BufferedReader reader = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"), Charset.defaultCharset())){
 			String content = reader.readLine();
@@ -59,7 +59,7 @@ public class Persistencia {
 	}
 	
 	
-	public String avgMonthlySales(boolean groupByCountry) {
+	public static String avgMonthlySales(boolean groupByCountry) {
 		HashMap <String, Double> averageCountry = new HashMap <> ();
 		HashMap <String, Integer> countCountrys = new HashMap <> ();
 		try (BufferedReader reader = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"), Charset.defaultCharset())){
