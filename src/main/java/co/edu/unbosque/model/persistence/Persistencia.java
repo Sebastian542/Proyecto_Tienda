@@ -8,12 +8,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+
+
 public class Persistencia {
 	
 	public Persistencia() {}
 	
-	public static double sumTotalSales() {
+	public  double sumTotalSales() {
+		
 		double sum = 0;
+		
 		try (BufferedReader reader = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"), Charset.defaultCharset())){
 			String content = reader.readLine();
 			while(reader.ready()) {
@@ -26,7 +30,7 @@ public class Persistencia {
 	}
 
 
-	public static List <String> findByInvoiceNo(String invoiceNo) {
+	public  List <String> findByInvoiceNo(String invoiceNo) {
 		List <String> list = new ArrayList <> ();
 		try (BufferedReader read = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"), Charset.defaultCharset())){
 			String content = read.readLine();
@@ -40,7 +44,7 @@ public class Persistencia {
 		return list;
 	}
 	
-	public static int countByStockCode(String stockCode) {
+	public  int countByStockCode(String stockCode) {
 		int sum = 0;
 		try (BufferedReader reader = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"), Charset.defaultCharset())){
 			String content = reader.readLine();
@@ -55,7 +59,7 @@ public class Persistencia {
 	}
 	
 	
-	public static String avgMonthlySales(boolean groupByCountry) {
+	public String avgMonthlySales(boolean groupByCountry) {
 		HashMap <String, Double> averageCountry = new HashMap <> ();
 		HashMap <String, Integer> countCountrys = new HashMap <> ();
 		try (BufferedReader reader = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"), Charset.defaultCharset())){
@@ -99,7 +103,7 @@ public class Persistencia {
 		return null;
 	}
 	
-	public static String findPartiallyByDescription(String search, boolean order) {
+	public  String findPartiallyByDescription(String search, boolean order) {
 		try (BufferedReader scan = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"),
 				Charset.defaultCharset())) {
 			HashMap<Integer, String> partialDescription = new HashMap<>();
