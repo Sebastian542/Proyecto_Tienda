@@ -103,31 +103,61 @@ public class Persistencia {
 		return null;
 	}
 	
-	public  String findPartiallyByDescription(String search, boolean order) {
-		try (BufferedReader scan = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"),
+	public static List<String> findPartiallyByDescription(String search) {
+		List<String> list = new ArrayList<>();
+		search = search.toUpperCase();
+		try (BufferedReader read = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"),
 				Charset.defaultCharset())) {
-			HashMap<Integer, String> partialDescription = new HashMap<>();
-			String content = scan.readLine();
-			while (scan.ready()) {
-				content = scan.readLine();
-				String line[] = content.split(",");
-				if (!search.equalsIgnoreCase(String.valueOf(line[2]))) {
-					if (order) {
-						TreeMap<Integer, String> quantity = new TreeMap<Integer, String>();
-						quantity.put(Integer.parseInt(line[3]), line[2]);
-						return quantity.descendingMap().entrySet().stream().map(x -> String.valueOf(x))
-								.collect(Collectors.joining("\n"));
+			String content = read.readLine();
+			while (read.ready()) {
+				content = read.readLine();
+				if (content.contains(search))
+					list.add(content);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public static List<String> findPartiallyByDescription(String search, boolean order) {
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+		try (BufferedReader read = Files.newBufferedReader(Paths.get("src/main/resources/Archives/data.csv"),
+				Charset.defaultCharset())) {
+			String content = read.readLine();
+			while (read.ready()) {
+				content = read.readLine();
+				if (content.contains(search)) {
+					String line[] = content.split("[,]");
+					if (!map.containsKey(line[2])) {
+						map.put(line[2], Integer.parseInt(line[3]));
 					} else {
-						partialDescription.put(Integer.parseInt(line[3]), line[2]);
-						return partialDescription.entrySet().stream().map(x -> String.valueOf(x))
-								.collect(Collectors.joining("\n"));
+						int quantity = Integer.parseInt(line[3]);
+						map.replace(line[2], map.get(line[2]) + quantity);
 					}
 				}
+			}
+			if (order) {
+				return map.entrySet().stream().sorted((x, y) -> y.getValue() - x.getValue())
+						.map(x -> x.getKey() + " = " + x.getValue()).collect(Collectors.toList());
+			} else {
+				return map.entrySet().stream().map(x -> x.getKey() + " = " + x.getValue()).collect(Collectors.toList());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static String findPartiallyByDescription(String search, int initMonth, int endMonth) {
+		List<String> list = findPartiallyByDescription(search);
+		for (String index : list) {
+			String line[] = index.split("[,]");
+			String date[] = line[4].split("/");
+			if (Integer.parseInt(date[0]) >= initMonth && Integer.parseInt(date[0]) <= endMonth)
+				list.add(index);
+		}
+		return list.stream().collect(Collectors.joining("\n"));
 	}
 	
 }
